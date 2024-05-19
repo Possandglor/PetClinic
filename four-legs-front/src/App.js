@@ -4,14 +4,14 @@ import './MyTestModule'
 import MyTestModule from './MyTestModule';
 import Menu from './Menu';
 
+import ClientList from './components/ClientList';
+
 function App() {
   return (
     <div>
       <Menu />
       <div className="App">
-        <header className="App-header">
-          <MyTestModule />
-        </header>
+          <ClientList/>
       </div>
     </div>
   );
