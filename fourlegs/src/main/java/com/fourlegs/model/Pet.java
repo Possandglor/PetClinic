@@ -1,5 +1,7 @@
 package com.fourlegs.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,16 +21,11 @@ public class Pet {
     private Date birthDate;
     private String gender;
 
-    @ManyToMany
-    @JoinTable(
-            name = "PetOwners",
-            joinColumns = @JoinColumn(name = "petID"),
-            inverseJoinColumns = @JoinColumn(name = "clientID")
-    )
-    private Set<Client> owners;
+
+    @ManyToMany(mappedBy = "pets")
+    @JsonIgnore
+    private List<Client> owners;
 
     @OneToMany(mappedBy = "pet")
     private List<Visit> visits;
-
-    // getters and setters
 }

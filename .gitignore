@@ -133,3 +133,4 @@ dist
 *build/*
 */.idea
 */.mvn
+*/build

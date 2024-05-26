@@ -1,23 +1,25 @@
 package com.fourlegs.controller;
 
 import com.fourlegs.model.Client;
+import com.fourlegs.model.Pet;
 import com.fourlegs.service.ClientService;
+import com.fourlegs.service.PetService;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/apiTest")
+@RequiredArgsConstructor
 public class ApiController {
     int i =0;
-    @Autowired
-    public ApiController(ClientService clientService) {
-        this.clientService = clientService;
-    }
 
     @GetMapping("/test")
     @CrossOrigin("*")
@@ -26,13 +28,9 @@ public class ApiController {
     }
 
     private final ClientService clientService;
+    private final PetService petService;
 
-    @GetMapping("/clients")
-    public List<Client> getAllClients() {
-        return clientService.getAllClients();
-    }
-
-//    @PostConstruct
+    @PostConstruct
     public void func(){
         Client client1 = new Client();
         client1.setAddress("123 Main St");
@@ -47,7 +45,15 @@ public class ApiController {
         client2.setLastName("Smith");
         client2.setPhoneNumber("0987654321");
         client2.setEmail("jane.smith@example.com");
-        clientService.createClient(client1);
-        clientService.createClient(client2);
+
+        Pet pet = new Pet();
+        pet.setName("Buddy");
+        pet.setSpecies("Dog");
+        pet.setBreed("Labrador");
+        pet.setBirthDate(new Date());
+        pet.setGender("Male");
+        petService.savePet(pet);
+        clientService.saveClient(client1);
+        clientService.saveClient(client2);
     }
 }
