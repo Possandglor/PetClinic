@@ -3,6 +3,9 @@ import moment from 'moment';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 // import Modal from 'react-modal';
+
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import api from '../../services/api';
 import Modal from './Modal'; // Импортируйте компонент модального окна
 
@@ -11,11 +14,23 @@ const localizer = momentLocalizer(moment);
 const ShiftAndVisitCalendar = () => {
     const [events, setEvents] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [selectedDate, setSelectedDate] = useState(null);
+    const [newShiftModalIsOpen, setNewShiftModalIsOpen] = useState(false);
+    const [selectedEvent, setSelectedEvent] = useState(null);
     const [shifts, setShifts] = useState([]);
-    const [shiftsDay, setShiftsDay] = useState([]);
-    const [visits, setVisits] = useState([]);
+    const [selectedShiftSlot, setSelectedShiftSlot] = useState(null);
+    const [shiftStartTime, setShiftStartTime] = useState(new Date());
+    const [shiftEndTime, setShiftEndTime] = useState(new Date());
 
+    const [pets, setPets] = useState([]);
+    const [selectedPet, setSelectedPet] = useState(null);
+
+    const [clients, setClients] = useState([]);
+    const [selectedClient, setSelectedClient] = useState(null);
+    const [comment, setComment] = useState('');
+
+    const [phoneFilter, setPhoneFilter] = useState('');
+    const [filteredClients, setFilteredClients] = useState([]);
+    
     const minTime = new Date();
     minTime.setHours(8, 0, 0);
 
@@ -26,7 +41,9 @@ const ShiftAndVisitCalendar = () => {
         const fetchData = async () => {
             const shiftsData = await api.getShifts();
             const visitsData = await api.getVisits();
-
+            const clientData = await api.getClients();
+            console.log(clientData)
+            setClients(clientData)
             const eventsData = [...visitsData].map(item => ({
                 ...item,
                 start: new Date(item.startDate),
@@ -36,34 +53,43 @@ const ShiftAndVisitCalendar = () => {
             console.log(eventsData)
             setEvents(eventsData);
             setShifts(shiftsData);
+            setClients(clientData);
+            setFilteredClients(clientData);
         };
 
         fetchData();
     }, []);
 
-    const handleSelect = ({ visitID,start,end }) => {
-        console.log(visitID)
-        setSelectedDate(start);
-        const selectedShifts = shifts.filter(event => event.shiftDate && new Date(event.shiftDate).toDateString() === start.toDateString());
-        const selectedVisits = events.filter(event => event.startDate && new Date(event.startDate).toDateString() === start.toDateString());
-        console.log(selectedVisits)
-        setShiftsDay(selectedShifts);
-        setVisits(selectedVisits);
+
+    const handleSelectEvent = (event) => {
+        setSelectedEvent(event);
         setModalIsOpen(true);
     };
 
-    const handleCreateEvent = (slotInfo,{ slots,start, end }) => {
-        console.log(slotInfo);
-        console.log(slots);
-        console.log(start);
-        console.log(end);
-        // setSelectedDate(start);
-        // const selectedShifts = shifts.filter(event => event.shiftDate && new Date(event.shiftDate).toDateString() === start.toDateString());
-        // const selectedVisits = events.filter(event => event.startDate && new Date(event.startDate).toDateString() === start.toDateString());
-        // console.log(selectedVisits)
-        // setShiftsDay(selectedShifts);
-        // setVisits(selectedVisits);
-        // setModalIsOpen(true);
+    const handleCreateEvent = (slotInfo) => {
+        console.log(slotInfo)
+        setShiftStartTime(new Date(slotInfo.start))
+        setShiftEndTime(new Date(slotInfo.end))
+        setSelectedShiftSlot(slotInfo);
+        setNewShiftModalIsOpen(true);
+    };
+
+    const handleCreateNewShift = (slotInfo) => {
+        console.log(slotInfo)
+    }
+
+    const handleClientChange = (e) => {
+        const selectedClientId = e.target.value;
+        setSelectedClient(selectedClientId);
+        const client = clients.find(c => c.id === selectedClientId);
+        setPets(client ? client.pets : []);
+    };
+
+    const handlePhoneFilterChange = (e) => {
+        const filter = e.target.value;
+        setPhoneFilter(filter);
+        const filtered = clients.filter(client => client.phoneNumber.includes(filter));
+        setFilteredClients(filtered);
     };
 
     return (
@@ -82,41 +108,99 @@ const ShiftAndVisitCalendar = () => {
                 onSelectSlot={handleCreateEvent}
 
                 showMultiDayTimes
-                onSelectEvent={handleSelect}
-                formats={{
-                    timeGutterFormat: 'h:mm A', // Формат времени в боковой панели
-                    eventTimeRangeFormat: ({ start, end }, culture, localizer) =>
-                        localizer.format(start, 'h:mm A', culture) +
-                        ' - ' +
-                        localizer.format(end, 'h:mm', culture), // Формат времени события
-                }}
+                onSelectEvent={handleSelectEvent}
             />
             <Modal
                 isOpen={modalIsOpen}
-                onRequestClose={() => setModalIsOpen(false)}
-                contentLabel="Shift and Visit Details"
-                className='modal'
+                onClose={() => setModalIsOpen(false)}
             >
-                <h2>Details for {selectedDate && selectedDate.toDateString()}</h2>
-                <br />
-                <div>
-                    <h3>Смена:</h3>
-                    <ul>
-                        {shiftsDay.map(shift => (
-                            <li key={shift.shiftID}>{shift.employee.specialization}: {shift.employee.firstName + " " + shift.employee.lastName}</li>
-                        ))}
-                    </ul>
-                </div>
-                <div>
-                    <h3>Посещения:</h3>
-                    <ul>
-                        {visits.map(visit => (
-                            <li key={visit.visitID}>{visit.startDate} {visit.pet.name} ({visit.pet.breed}): {visit.reason}</li>
-                        ))}
-                    </ul>
-                </div>
-                <br />
+                <h2>Прием за {selectedEvent && selectedEvent.start.toDateString()}</h2>
+                {selectedEvent && (
+                    <div>
+                        <p>Смена: {selectedEvent.employee.specialization}: {selectedEvent.employee.firstName + " " + selectedEvent.employee.lastName}</p>
+                        <p>Посещение: {selectedEvent.pet.name} ({selectedEvent.pet.breed}): {selectedEvent.reason}</p>
+                    </div>
+                )}
                 <button onClick={() => setModalIsOpen(false)}>Close</button>
+            </Modal>
+            <Modal
+                isOpen={newShiftModalIsOpen}
+                onClose={() => setNewShiftModalIsOpen(false)}
+            >
+                <h2>Создание нового приема</h2>
+                {selectedShiftSlot && (
+                    <form onSubmit={handleCreateNewShift}>
+                        <div>
+                            <label htmlFor="startTime">Начало:</label>
+                            <DatePicker
+                                selected={shiftStartTime}
+                                onChange={(date) => setShiftStartTime(date)}
+                                showTimeSelect
+                                showTimeSelectOnly
+                                timeIntervals={15}
+                                timeCaption="Time"
+                                dateFormat="h:mm aa"
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="endTime">Конец:</label>
+                            <DatePicker
+                                selected={shiftEndTime}
+                                onChange={(date) => setShiftEndTime(date)}
+                                showTimeSelect
+                                showTimeSelectOnly
+                                timeIntervals={15}
+                                timeCaption="Time"
+                                dateFormat="h:mm aa"
+                            />
+                        </div>
+                         <div>
+                            <label htmlFor="phoneFilter">Фильтр по телефону:</label>
+                            <input
+                                type="text"
+                                id="phoneFilter"
+                                value={phoneFilter}
+                                onChange={handlePhoneFilterChange}
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="client">Клиент:</label>
+                            <select
+                                id="client"
+                                value={selectedClient}
+                                onChange={handleClientChange}
+                            >
+                                <option value="">Выберите хозяина</option>
+                                {filteredClients.map(client => (
+                                    <option key={client.id} value={client.id}>{client.phoneNumber} ({client.lastName})</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label htmlFor="pet">Питомец:</label>
+                            <select
+                                id="pet"
+                                value={selectedPet}
+                                onChange={(e) => setSelectedPet(e.target.value)}
+                            >
+                                <option value="">Выберите питомца</option>
+                                {pets.map(pet => (
+                                    <option key={pet.id} value={pet.id}>{pet.name} ({pet.breed})</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label htmlFor="comment">Комментарий:</label>
+                            <textarea
+                                id="comment"
+                                value={comment}
+                                onChange={(e) => setComment(e.target.value)}
+                            />
+                        </div>
+                        <button type="submit">Create</button>
+                    </form>
+                )}
+                <button onClick={() => setNewShiftModalIsOpen(false)}>Close</button>
             </Modal>
         </div>
     );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
+import VisitForm from './VisitForm';
 
 const VisitList = () => {
   const [visits, setVisits] = useState([]);
@@ -21,6 +22,7 @@ const VisitList = () => {
           <li key={visit.visitID}>{visit.description}</li>
         ))}
       </ul>
+      {/* <VisitForm /> */}
     </div>
   );
 };

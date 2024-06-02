@@ -1,4 +1,4 @@
-CREATE TABLE Clients (
+CREATE TABLE "CLIENTS" (
     ClientID INT PRIMARY KEY,
     FirstName VARCHAR(255),
     LastName VARCHAR(255),

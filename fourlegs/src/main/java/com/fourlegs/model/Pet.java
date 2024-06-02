@@ -1,8 +1,6 @@
 package com.fourlegs.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,6 +11,7 @@ import java.util.Set;
 
 @Entity
 @Data
+@JsonIdentityInfo(generator= ObjectIdGenerators.IntSequenceGenerator.class, property="@petID")
 public class Pet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,11 +23,15 @@ public class Pet {
     private String gender;
 
 
-    @ManyToMany(mappedBy = "pets")
-    @JsonBackReference
+    @ManyToMany
+    @JoinTable(
+            name = "client_pet",
+            joinColumns = @JoinColumn(name = "petID"),
+            inverseJoinColumns = @JoinColumn(name = "clientID")
+    )
     private List<Client> owners;
 
     @OneToMany(mappedBy = "pet")
-    @JsonBackReference
+    @JsonBackReference(value = "visits")
     private List<Visit> visits;
 }

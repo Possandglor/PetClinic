@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../services/api';
 import './ClientList.css';
+import Modal from '../calendar/Modal';
 
 const ClientList = () => {
   const [clients, setClients] = useState([]);
@@ -14,6 +15,8 @@ const ClientList = () => {
   const [existingPetId, setExistingPetId] = useState('');
   const [existingPets, setExistingPets] = useState([]);
 
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
   useEffect(() => {
     fetchClients();
     handleExistingPets();
@@ -21,10 +24,18 @@ const ClientList = () => {
 
   const fetchClients = async () => {
     const data = await api.getClients();
+    console.log(data)
     setClients(data);
   };
 
-  const handleAddPet = async (clientId, petData, existingPetId) => {
+  const handleAddPet = async (clientId, petName, existingPetId) => {
+    let petData = {
+      "name":petName,
+      "gender":petGender,
+      "birthDate":petBirthDate+"T00:00:00Z",
+      "species":petSpecies,
+      "breed":petBreed
+    }
     if (existingPetId) {
       await api.addExistingPetToClient(clientId, existingPetId);
     } else {
@@ -57,27 +68,35 @@ const ClientList = () => {
   };
 
   const handleUpdateClient = async (clientId, updatedClient) => {
+    console.log(clientId, updatedClient)
+    // updatedClient.pets = undefined
     await api.updateClient(clientId, updatedClient);
     fetchClients(); // Refresh the client list to show the updated client
   };
 
   const filteredClients = clients.filter(client =>
     client.firstName.toLowerCase().includes(filter.toLowerCase()) ||
-    client.lastName.toLowerCase().includes(filter.toLowerCase())
+    client.lastName.toLowerCase().includes(filter.toLowerCase())||
+    client.phoneNumber.toLowerCase().includes(filter.toLowerCase())
   );
 
   const handleExistingPets = async () => {
     let data = await api.getExistingPets();
     console.log(data)
     setExistingPets(data)
-
   };
+
+  const handleSelectClient = (client) => {
+    setSelectedClient(client)
+    setModalIsOpen(true)
+  };
+
   return (
     <div className="client-list">
       <div className="filter">
         <input
           type="text"
-          placeholder="Filter clients..."
+          placeholder="Фильтр клиентов..."
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         />
@@ -86,8 +105,8 @@ const ClientList = () => {
         {filteredClients.map(client => (
           <li key={client.clientID}>
             <div className="client-info">
-              <span>{client.firstName} {client.lastName}</span>
-              <button onClick={() => setSelectedClient(client)}>Edit</button>
+              <span>{client.firstName} {client.lastName}: {client.phoneNumber}</span>
+              <button onClick={() => handleSelectClient(client)}>Edit</button>
               <button onClick={() => handleDeleteClient(client.clientID)}>Delete</button>
             </div>
             <ul>
@@ -99,94 +118,95 @@ const ClientList = () => {
         ))}
       </ul>
       {selectedClient && (
-        <div className="modal">
-          <div className="modal-content">
-            <h3>Edit Client</h3>
+        <Modal
+          isOpen={modalIsOpen}
+          onClose={() => setModalIsOpen(false)}
+        >
+          <h3>Edit Client</h3>
+          <input
+            type="text"
+            placeholder="Имя"
+            value={selectedClient.firstName}
+            onChange={(e) => setSelectedClient({ ...selectedClient, firstName: e.target.value })}
+          />
+          <input
+            type="text"
+            placeholder="Фамилия"
+            value={selectedClient.lastName}
+            onChange={(e) => setSelectedClient({ ...selectedClient, lastName: e.target.value })}
+          />
+          <input
+            type="text"
+            placeholder="Номер телефона"
+            value={selectedClient.phoneNumber}
+            onChange={(e) => setSelectedClient({ ...selectedClient, phoneNumber: e.target.value })}
+          />
+          <input
+            type="text"
+            placeholder="Email"
+            value={selectedClient.email}
+            onChange={(e) => setSelectedClient({ ...selectedClient, email: e.target.value })}
+          />
+          <input
+            type="text"
+            placeholder="Адрес"
+            value={selectedClient.address}
+            onChange={(e) => setSelectedClient({ ...selectedClient, address: e.target.value })}
+          />
+          <h4>Pets</h4>
+          <ul>
+            {selectedClient.pets.map(pet => (
+              <li key={pet.petID}>
+                {pet.name} ({pet.species})
+                <button onClick={() => handleDeletePetFromOwner(selectedClient.clientID, pet.petID)}>Delete</button>
+              </li>
+            ))}
+          </ul>
+          <div className="pet-form">
             <input
               type="text"
-              placeholder="First name"
-              value={selectedClient.firstName}
-              onChange={(e) => setSelectedClient({ ...selectedClient, firstName: e.target.value })}
+              placeholder="Кличка"
+              value={petName}
+              onChange={(e) => setPetName(e.target.value)}
             />
             <input
               type="text"
-              placeholder="Last name"
-              value={selectedClient.lastName}
-              onChange={(e) => setSelectedClient({ ...selectedClient, lastName: e.target.value })}
+              placeholder="Вид"
+              value={petSpecies}
+              onChange={(e) => setPetSpecies(e.target.value)}
             />
             <input
               type="text"
-              placeholder="Phone number"
-              value={selectedClient.phoneNumber}
-              onChange={(e) => setSelectedClient({ ...selectedClient, phoneNumber: e.target.value })}
+              placeholder="Порода"
+              value={petBreed}
+              onChange={(e) => setPetBreed(e.target.value)}
             />
             <input
-              type="text"
-              placeholder="Email"
-              value={selectedClient.email}
-              onChange={(e) => setSelectedClient({ ...selectedClient, email: e.target.value })}
+              type="date"
+              placeholder="Дата рождения"
+              value={petBirthDate}
+              onChange={(e) => setPetBirthDate(e.target.value)}
             />
-            <input
-              type="text"
-              placeholder="Address"
-              value={selectedClient.address}
-              onChange={(e) => setSelectedClient({ ...selectedClient, address: e.target.value })}
-            />
-            <h4>Pets</h4>
-            <ul>
-              {selectedClient.pets.map(pet => (
-                <li key={pet.petID}>
-                  {pet.name} ({pet.species})
-                  <button onClick={() => handleDeletePetFromOwner(selectedClient.clientID, pet.petID)}>Delete</button>
-                </li>
+            <select
+              value={petGender}
+              onChange={(e) => setPetGender(e.target.value)}
+            >
+              <option value="">Пол</option>
+              <option value="Male">М</option>
+              <option value="Female">Ж</option>
+            </select>
+            <button onClick={() => handleAddPet(selectedClient.clientID, petName)}>Add New Pet</button>
+            <select value={existingPetId} onChange={(e) => setExistingPetId(e.target.value)}>
+              <option value="">Select existing pet</option>
+              {existingPets.map(pet => (
+                <option key={pet.petID} value={pet.petID}>{pet.name}</option>
               ))}
-            </ul>
-            <div className="pet-form">
-              <input
-                type="text"
-                placeholder="Pet name"
-                value={petName}
-                onChange={(e) => setPetName(e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Pet species"
-                value={petSpecies}
-                onChange={(e) => setPetSpecies(e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Pet breed"
-                value={petBreed}
-                onChange={(e) => setPetBreed(e.target.value)}
-              />
-              <input
-                type="date"
-                placeholder="Pet birth date"
-                value={petBirthDate}
-                onChange={(e) => setPetBirthDate(e.target.value)}
-              />
-              <select
-                value={petGender}
-                onChange={(e) => setPetGender(e.target.value)}
-              >
-                <option value="">Select gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>
-              <button onClick={() => handleAddPet(selectedClient.clientID)}>Add New Pet</button>
-              <select value={existingPetId} onChange={(e) => setExistingPetId(e.target.value)}>
-                <option value="">Select existing pet</option>
-                {existingPets.map(pet => (
-                  <option key={pet.petID} value={pet.petID}>{pet.name}</option>
-                ))}
-              </select>
-              <button onClick={() => handleAddExistingPet(selectedClient.clientID)}>Add Existing Pet</button>
-            </div>
-            <button onClick={() => handleUpdateClient(selectedClient.clientID, selectedClient)}>Save</button>
-            <button onClick={() => setSelectedClient(null)}>Cancel</button>
+            </select>
+            <button onClick={() => handleAddExistingPet(selectedClient.clientID)}>Add Existing Pet</button>
           </div>
-        </div>
+          <button onClick={() => handleUpdateClient(selectedClient.clientID, selectedClient)}>Save</button>
+          <button onClick={() => setSelectedClient(null)}>Cancel</button>
+        </Modal>
       )}
     </div>
   );

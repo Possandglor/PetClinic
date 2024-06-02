@@ -1,5 +1,9 @@
 package com.fourlegs.controller;
 
+import com.fourlegs.dto.ClientDTO;
+import com.fourlegs.dto.PetDTO;
+import com.fourlegs.mapper.ClientMapper;
+import com.fourlegs.mapper.PetMapper;
 import com.fourlegs.model.Client;
 import com.fourlegs.model.Pet;
 import com.fourlegs.service.ClientService;
@@ -30,14 +34,14 @@ public class ClientController {
     }
 
     @PostMapping
-    public Client saveClient(@RequestBody Client client) {
-        return clientService.saveClient(client);
+    public Client saveClient(@RequestBody ClientDTO client) {
+        return clientService.saveClient(ClientMapper.mapClientDtoToClient(client));
     }
 
     @PutMapping("/{clientID}")
-    public Client updateClient(@PathVariable Long clientID, @RequestBody Client client) {
+    public Client updateClient(@PathVariable Long clientID, @RequestBody ClientDTO client) {
         client.setClientID(clientID);
-        return clientService.saveClient(client);
+        return clientService.saveClient(ClientMapper.mapClientDtoToClient(client));
     }
 
     @DeleteMapping("/{clientID}")
@@ -47,13 +51,13 @@ public class ClientController {
     }
 
     @PostMapping("/{clientId}/pets")
-    public ResponseEntity<Client> addNewPetToClient(@PathVariable Long clientId, @RequestBody Pet pet) {
+    public ResponseEntity<Client> addNewPetToClient(@PathVariable Long clientId, @RequestBody PetDTO pet) {
         Optional<Client> clientOpt = clientService.getClientById(clientId);
         if (clientOpt.isPresent()) {
             Client client = clientOpt.get();
-            petService.savePet(pet);
-            client.getPets().add(pet);
-            clientService.saveClient(client);
+            petService.savePet(PetMapper.mapPetDtoToPet(pet));
+            client.getPets().add(PetMapper.mapPetDtoToPet(pet));
+            Client test = clientService.saveClient(client);
             return ResponseEntity.ok(client);
         } else {
             return ResponseEntity.notFound().build();
@@ -68,7 +72,9 @@ public class ClientController {
             Client client = clientOpt.get();
             Pet pet = petOpt.get();
             client.getPets().add(pet);
-            clientService.saveClient(client);
+            Client test = clientService.saveClient(client);
+            pet.getOwners().add(client);
+            petService.savePet(pet);
             return ResponseEntity.ok(client);
         } else {
             return ResponseEntity.notFound().build();

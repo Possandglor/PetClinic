@@ -7,6 +7,7 @@ const PetList = () => {
   useEffect(() => {
     const fetchData = async () => {
       const data = await api.getPets();
+      console.log(data)
       setPets(data);
     };
 

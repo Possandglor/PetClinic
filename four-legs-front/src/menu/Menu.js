@@ -9,6 +9,9 @@ const Menu = () => {
         setIsOpen(!isOpen);
     };
 
+    const closeMenu = () => {
+        setIsOpen(false);
+    };
     return (
         <div className="dropdown-menu">
             <button className="dropdown-menu__toggle" onClick={toggleMenu}>
@@ -16,7 +19,7 @@ const Menu = () => {
             </button>
             {isOpen && (
                 <div className="dropdown-menu__content">
-                    <Navigation />
+                    <Navigation closeMenu={closeMenu} />
                 </div>
             )}
         </div>
