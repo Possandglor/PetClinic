@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './Menu.css'; // Подключаем CSS для стилизации
-import Navigation from '../components/Navigation';
+import Navigation from '../components/navigation/Navigation';
 
 const Menu = () => {
     const [isOpen, setIsOpen] = useState(false);

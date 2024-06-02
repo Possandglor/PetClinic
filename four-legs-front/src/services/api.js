@@ -189,6 +189,7 @@ const api = {
       if (!response.ok) {
         throw new Error('Failed to fetch visits');
       }
+      
       return await response.json();
     } catch (error) {
       console.error('Error fetching visits:', error);
@@ -302,6 +303,8 @@ const api = {
       if (!response.ok) {
         throw new Error('Failed to fetch shifts');
       }
+      // console.log(response);
+      // console.log(await response.json());
       return await response.json();
     } catch (error) {
       console.error('Error fetching shifts:', error);

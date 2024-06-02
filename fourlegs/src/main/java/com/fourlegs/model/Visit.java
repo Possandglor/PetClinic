@@ -1,7 +1,10 @@
 package com.fourlegs.model;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -11,12 +14,14 @@ public class Visit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long visitID;
-    private Date visitDate;
+    private ZonedDateTime startDate;
+    private ZonedDateTime endDate;
     private String reason;
     private String notes;
 
     @ManyToOne
     @JoinColumn(name = "petID")
+    @JsonManagedReference
     private Pet pet;
 
     @ManyToOne

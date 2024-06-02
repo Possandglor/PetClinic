@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.sql.Time;
+import java.time.ZonedDateTime;
 import java.util.Date;
 
 @Entity
@@ -11,9 +12,7 @@ public class Shift {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long shiftID;
-    private Date shiftDate;
-    private Time startTime;
-    private Time endTime;
+    private ZonedDateTime shiftDate;
 
     @ManyToOne
     @JoinColumn(name = "employeeID")

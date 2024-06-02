@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../services/api';
+import api from '../../services/api';
 
 const ShiftList = () => {
   const [shifts, setShifts] = useState([]);
@@ -20,6 +20,7 @@ const ShiftList = () => {
         {shifts.map(shift => (
           <li key={shift.shiftID}>{shift.description}</li>
         ))}
+      
       </ul>
     </div>
   );

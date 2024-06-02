@@ -1,15 +1,16 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 // import Navigation from './components/Navigation';
-import ClientList from './components/clientList/ClientList.js';
-import PetList from './components/PetList';
-import EmployeeList from './components/EmployeeList';
-import VisitList from './components/VisitList';
-import PrescriptionList from './components/PrescriptionList';
-import PrescriptionTemplateList from './components/PrescriptionTemplateList';
-import ShiftList from './components/ShiftList';
-import FileList from './components/FileList';
+import ClientList from './components/clients/ClientList.js';
+import PetList from './components//pets/PetList';
+import EmployeeList from './components/employes/EmployeeList.js';
+import VisitList from './components/visits/VisitList';
+import PrescriptionList from './components/prescriptions/PrescriptionList';
+import PrescriptionTemplateList from './components/prescriptions/PrescriptionTemplateList';
+import ShiftList from './components/shifts/ShiftList';
+import FileList from './components/files/FileList';
 import Menu from './menu/Menu.js';
+import ShiftAndVisitCalendar from './components/calendar/ShiftAndVisitCalendar.js';
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/prescription-templates" element={<PrescriptionTemplateList/>} />
         <Route path="/shifts" element={<ShiftList/>} />
         <Route path="/files" element={<FileList/>} />
+        <Route path="/calendar" element={<ShiftAndVisitCalendar/>} />
       </Routes >
     </Router>
   );

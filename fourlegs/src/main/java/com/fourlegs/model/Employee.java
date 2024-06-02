@@ -1,5 +1,7 @@
 package com.fourlegs.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -18,9 +20,11 @@ public class Employee {
     private String email;
 
     @OneToMany(mappedBy = "employee")
+    @JsonBackReference
     private List<Visit> visits;
 
     @OneToMany(mappedBy = "employee")
+    @JsonBackReference
     private List<Shift> shifts;
 
     // getters and setters
