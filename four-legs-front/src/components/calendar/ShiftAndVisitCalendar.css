@@ -41,7 +41,7 @@
     /* Установите достаточно высокий z-index */
     position: fixed;
     /* Fixed позиционирование для поверхностного отображения */
-    top: 50%;
+    top: 10%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #fff;
@@ -49,7 +49,7 @@
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     max-width: 500px;
-    width: 100%;
+    width: 60%;
     box-sizing: border-box;
     /* Используем flexbox для управления расположением элементов */
     display: flex;
@@ -102,5 +102,6 @@
     z-index: 1001;
     max-width: 90%;
     max-height: 90%;
+    width: 30%;
     overflow: auto;
 }
