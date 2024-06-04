@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -31,7 +32,6 @@ public class Pet {
     )
     private List<Client> owners;
 
-    @OneToMany(mappedBy = "pet")
-    @JsonBackReference(value = "visits")
+    @OneToMany(mappedBy = "visitID")
     private List<Visit> visits;
 }

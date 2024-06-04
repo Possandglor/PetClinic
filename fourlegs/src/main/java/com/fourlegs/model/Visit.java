@@ -1,5 +1,6 @@
 package com.fourlegs.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class Visit {
 
     @ManyToOne
     @JoinColumn(name = "petID")
-    @JsonManagedReference
+    @JsonIdentityReference(alwaysAsId = true)
     private Pet pet;
 
     @ManyToOne

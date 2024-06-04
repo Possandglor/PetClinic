@@ -4,7 +4,6 @@ import com.fourlegs.model.Pet;
 import com.fourlegs.service.ClientService;
 import com.fourlegs.service.PetService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.ExpressionException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

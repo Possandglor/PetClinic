@@ -102,6 +102,7 @@ public class ApiController {
         );
 
         visitRepository.saveAll(visits);
+        petRepository.saveAll(pets);
     }
 
     private static Employee createEmployee(String firstName, String lastName, String specialization, String phone, String mail) {

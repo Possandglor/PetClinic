@@ -20,8 +20,9 @@ const ShiftAndVisitCalendar = () => {
     const [selectedShiftSlot, setSelectedShiftSlot] = useState(null);
     const [shiftStartTime, setShiftStartTime] = useState(new Date());
     const [shiftEndTime, setShiftEndTime] = useState(new Date());
-
     const [pets, setPets] = useState([]);
+
+    const [clientPets, setClientPets] = useState([]);
     const [selectedPet, setSelectedPet] = useState(null);
 
     const [clients, setClients] = useState([]);
@@ -30,7 +31,7 @@ const ShiftAndVisitCalendar = () => {
 
     const [phoneFilter, setPhoneFilter] = useState('');
     const [filteredClients, setFilteredClients] = useState([]);
-    
+
     const minTime = new Date();
     minTime.setHours(8, 0, 0);
 
@@ -42,12 +43,18 @@ const ShiftAndVisitCalendar = () => {
             const shiftsData = await api.getShifts();
             const visitsData = await api.getVisits();
             const clientData = await api.getClients();
-            console.log(clientData)
+            const petData = await api.getPets();
             setClients(clientData)
+            setPets(petData)
+            console.log(pets)
             const eventsData = [...visitsData].map(item => ({
                 ...item,
                 start: new Date(item.startDate),
                 end: new Date(item.endDate),
+                pet: pets.find(elem => {
+                    console.log(elem, item.pet)
+                    return elem.petID == Number.isInteger(item.pet) ? item.pet : item.pet.petID
+                }),
                 title: `${item.pet.name + " " + item.pet.breed + " " + item.reason}`,
             }));
             console.log(eventsData)
@@ -82,7 +89,7 @@ const ShiftAndVisitCalendar = () => {
         const selectedClientId = e.target.value;
         setSelectedClient(selectedClientId);
         const client = clients.find(c => c.id === selectedClientId);
-        setPets(client ? client.pets : []);
+        setClientPets(client ? client.pets : []);
     };
 
     const handlePhoneFilterChange = (e) => {
@@ -154,7 +161,7 @@ const ShiftAndVisitCalendar = () => {
                                 dateFormat="h:mm aa"
                             />
                         </div>
-                         <div>
+                        <div>
                             <label htmlFor="phoneFilter">Фильтр по телефону:</label>
                             <input
                                 type="text"
@@ -184,7 +191,7 @@ const ShiftAndVisitCalendar = () => {
                                 onChange={(e) => setSelectedPet(e.target.value)}
                             >
                                 <option value="">Выберите питомца</option>
-                                {pets.map(pet => (
+                                {clientPets.map(pet => (
                                     <option key={pet.id} value={pet.id}>{pet.name} ({pet.breed})</option>
                                 ))}
                             </select>
