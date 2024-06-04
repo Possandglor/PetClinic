@@ -87,4 +87,10 @@ public class ClientController {
             clientService.deletePetOwner(clientId,petID);
             return ResponseEntity.ok(clientService.getClientById(clientId));
     }
+
+    @GetMapping("/pet/{petID}")
+    public List<Client> getClientsByPetID(@PathVariable Long petID) {
+        List<Client> list = clientService.getClientsByPetID(petID);
+        return list;
+    }
 }

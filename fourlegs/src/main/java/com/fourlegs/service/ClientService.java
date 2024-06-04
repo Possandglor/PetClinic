@@ -47,4 +47,8 @@ public class ClientService  {
         clientRepository.save(client);
         petRepository.save(pet);
     }
+
+    public List<Client> getClientsByPetID(Long petID){
+        return clientRepository.findClientsByPetID(petID);
+    }
 }

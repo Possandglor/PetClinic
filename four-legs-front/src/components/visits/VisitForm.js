@@ -71,7 +71,7 @@ const VisitForm = ({ open, onClose, onSubmit, pets, employees }) => {
           >
             {employees.map((employee) => (
               <MenuItem key={employee.employeeID} value={employee.employeeID}>
-                {employee.firstName} {employee.lastName}
+                {employee.name}
               </MenuItem>
             ))}
           </Select>

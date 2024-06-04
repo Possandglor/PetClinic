@@ -1,7 +1,6 @@
 CREATE TABLE "CLIENTS" (
     ClientID INT PRIMARY KEY,
-    FirstName VARCHAR(255),
-    LastName VARCHAR(255),
+    Name VARCHAR(255),
     PhoneNumber VARCHAR(255),
     Email VARCHAR(255),
     Address VARCHAR(255)
@@ -26,8 +25,7 @@ CREATE TABLE PetOwners (
 
 CREATE TABLE Employees (
     EmployeeID INT PRIMARY KEY,
-    FirstName VARCHAR(255),
-    LastName VARCHAR(255),
+    Name VARCHAR(255),
     Specialization VARCHAR(255),
     PhoneNumber VARCHAR(255),
     Email VARCHAR(255)

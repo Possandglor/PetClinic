@@ -1,9 +1,13 @@
 package com.fourlegs.controller;
+
+import com.fourlegs.dto.VisitDTO;
+import com.fourlegs.mapper.VisitMapper;
 import com.fourlegs.model.Visit;
 import com.fourlegs.service.VisitService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +20,7 @@ public class VisitController {
 
     @GetMapping
     public List<Visit> getAllVisits() {
+
         return visitService.getAllVisits();
     }
 

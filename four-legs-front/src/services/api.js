@@ -1,18 +1,30 @@
 import BASE_URL from './config';
 
+const headers = {
+  'Content-Type': 'application/json',
+  'Access-Control-Allow-Origin': '*'
+}
+
 const api = {
   getClients: async () => {
-    const response = await fetch(`${BASE_URL}/api/clients`);
+    const response = await fetch(`${BASE_URL}/api/clients`,{headers});
     if (!response.ok) {
       throw new Error('Failed to fetch clients');
     }
     return await response.json();
   },
-
+  getClientsByPetID: async (petID) => {
+    const response = await fetch(`${BASE_URL}/api/clients/pet/${petID}`,{headers});
+    if (!response.ok) {
+      throw new Error('Failed to fetch clients');
+    }
+    return await response.json();
+  },
   addClient: async (clientData) => {
     const response = await fetch(`${BASE_URL}/api/clients`, {
       method: 'POST',
       headers: {
+        ...headers,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(clientData),
@@ -27,6 +39,7 @@ const api = {
     const response = await fetch(`${BASE_URL}/api/clients/${clientId}`, {
       method: 'PUT',
       headers: {
+        ...headers,
         'Content-Type': 'application/json',
         'Accept':'application/json'
       },
@@ -41,6 +54,7 @@ const api = {
   deleteClient: async (clientId) => {
     const response = await fetch(`${BASE_URL}/api/clients/${clientId}`, {
       method: 'DELETE',
+      headers
     });
     if (!response.ok) {
       throw new Error('Failed to delete client');
@@ -51,6 +65,7 @@ const api = {
     const response = await fetch(`${BASE_URL}/api/clients/${clientId}/pets`, {
       method: 'POST',
       headers: {
+        ...headers,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(petData),
@@ -64,6 +79,7 @@ const api = {
     const response = await fetch(`${BASE_URL}/api/clients/${clientId}/pets/${existingPetId}`, {
       method: 'PUT',
       headers: {
+        ...headers,
         'Content-Type': 'application/json',
       },
     });
@@ -76,6 +92,7 @@ const api = {
     const response = await fetch(`${BASE_URL}/api/clients/${clientId}/pets/${petId}`, {
       method: 'DELETE',
       headers: {
+        ...headers,
         'Content-Type': 'application/json'
       },
     });
@@ -86,7 +103,7 @@ const api = {
   },
 
    getExistingPets: async () => {
-    const response = await fetch(`${BASE_URL}/api/pets`);
+    const response = await fetch(`${BASE_URL}/api/pets`,headers);
     if (!response.ok) {
       throw new Error('Failed to fetch existing pets');
     }
@@ -97,6 +114,7 @@ const api = {
     try {
       const response = await fetch(`${BASE_URL}/api/pets`, {
         headers: {
+          ...headers,
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         }
@@ -117,6 +135,7 @@ const api = {
       const response = await fetch(`${BASE_URL}/api/pets`, {
         method: 'POST',
         headers: {
+          ...headers,
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         },
@@ -135,6 +154,7 @@ const api = {
   deletePet: async (petId) => {
     const response = await fetch(`${BASE_URL}/api/pets/${petId}`, {
       method: 'DELETE',
+      headers
     });
     if (!response.ok) {
       throw new Error('Failed to delete pet');
@@ -145,6 +165,7 @@ const api = {
     try {
       const response = await fetch(`${BASE_URL}/api/employees`, {
         headers: {
+          ...headers,
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         }
@@ -164,6 +185,7 @@ const api = {
       const response = await fetch(`${BASE_URL}/api/employees`, {
         method: 'POST',
         headers: {
+          ...headers,
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         },
@@ -183,6 +205,7 @@ const api = {
     try {
       const response = await fetch(`${BASE_URL}/api/visits`, {
         headers: {
+          ...headers,
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         }
@@ -203,6 +226,7 @@ const api = {
       const response = await fetch(`${BASE_URL}/api/visits`, {
         method: 'POST',
         headers: {
+          ...headers,
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
         },

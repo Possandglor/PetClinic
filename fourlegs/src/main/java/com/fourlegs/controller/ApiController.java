@@ -44,18 +44,18 @@ public class ApiController {
 
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
         List<Client> clients = Arrays.asList(
-                createClient("Адрес 1", "Клиент 1", "Фамилия 1", "тел 1", "почта 1"),
-                createClient("Адрес 2", "Клиент 2", "Фамилия 2", "тел 2", "почта 2"),
-                createClient("Адрес 3", "Клиент 3", "Фамилия 3", "тел 3", "почта 3")
+                createClient("Адрес 1", "Вася Пупкин", "0501111111", "почта 1"),
+                createClient("Адрес 2", "Петя Васькин", "0502222222", "почта 2"),
+                createClient("Адрес 3", "Пупка Алохомора", "0503333333", "почта 3")
         );
 
         clientRepository.saveAll(clients);
 
 
         List<Employee> employeeList = Arrays.asList(
-                createEmployee("Имя 1","Фамилия 1","Врач","телефон","почта"),
-                createEmployee("Имя 2","Фамилия 2","Админ","телефон 2","почта 2"),
-                createEmployee("Имя 3","Фамилия 3","Ассистент","телефон 3","почта 3")
+                createEmployee("Врач Ветеринар","Врач","телефон","почта"),
+                createEmployee("Админ Стойкович","Админ","телефон 2","почта 2"),
+                createEmployee("Ассистент Помощников","Ассистент","телефон 3","почта 3")
         );
 
         List<Employee> employees = employeeRepository.saveAll(employeeList);
@@ -102,13 +102,11 @@ public class ApiController {
         );
 
         visitRepository.saveAll(visits);
-        petRepository.saveAll(pets);
     }
 
-    private static Employee createEmployee(String firstName, String lastName, String specialization, String phone, String mail) {
+    private static Employee createEmployee(String name, String specialization, String phone, String mail) {
         Employee employee1 = new Employee();
-        employee1.setFirstName(firstName);
-        employee1.setLastName(lastName);
+        employee1.setName(name);
         employee1.setSpecialization(specialization);
         employee1.setPhoneNumber(phone);
         employee1.setEmail(mail);
@@ -133,11 +131,10 @@ public class ApiController {
         return visit;
     }
 
-    private Client createClient(String addr, String firstName, String lastName, String phone, String email) {
+    private Client createClient(String addr, String name, String phone, String email) {
         Client client = new Client();
         client.setAddress(addr);
-        client.setFirstName(firstName);
-        client.setLastName(lastName);
+        client.setName(name);
         client.setPhoneNumber(phone);
         client.setEmail(email);
         return client;

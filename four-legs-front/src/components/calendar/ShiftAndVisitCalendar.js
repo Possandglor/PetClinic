@@ -46,15 +46,14 @@ const ShiftAndVisitCalendar = () => {
             const petData = await api.getPets();
             setClients(clientData)
             setPets(petData)
-            console.log(pets)
+            console.log(shiftsData)
+            console.log(visitsData)
+            console.log(clientData)
+            console.log(petData)
             const eventsData = [...visitsData].map(item => ({
                 ...item,
                 start: new Date(item.startDate),
                 end: new Date(item.endDate),
-                pet: pets.find(elem => {
-                    console.log(elem, item.pet)
-                    return elem.petID == Number.isInteger(item.pet) ? item.pet : item.pet.petID
-                }),
                 title: `${item.pet.name + " " + item.pet.breed + " " + item.reason}`,
             }));
             console.log(eventsData)
@@ -124,7 +123,7 @@ const ShiftAndVisitCalendar = () => {
                 <h2>Прием за {selectedEvent && selectedEvent.start.toDateString()}</h2>
                 {selectedEvent && (
                     <div>
-                        <p>Смена: {selectedEvent.employee.specialization}: {selectedEvent.employee.firstName + " " + selectedEvent.employee.lastName}</p>
+                        <p>Смена: {selectedEvent.employee.specialization}: {selectedEvent.employee.name}</p>
                         <p>Посещение: {selectedEvent.pet.name} ({selectedEvent.pet.breed}): {selectedEvent.reason}</p>
                     </div>
                 )}

@@ -30,11 +30,11 @@ const ClientList = () => {
 
   const handleAddPet = async (clientId, petName, existingPetId) => {
     let petData = {
-      "name":petName,
-      "gender":petGender,
-      "birthDate":petBirthDate+"T00:00:00Z",
-      "species":petSpecies,
-      "breed":petBreed
+      "name": petName,
+      "gender": petGender,
+      "birthDate": petBirthDate + "T00:00:00Z",
+      "species": petSpecies,
+      "breed": petBreed
     }
     if (existingPetId) {
       await api.addExistingPetToClient(clientId, existingPetId);
@@ -74,10 +74,9 @@ const ClientList = () => {
     fetchClients(); // Refresh the client list to show the updated client
   };
 
-  const filteredClients = clients.filter(client =>
-    client.firstName.toLowerCase().includes(filter.toLowerCase()) ||
-    client.lastName.toLowerCase().includes(filter.toLowerCase())||
+  const filteredClients = clients.filter(client => client.name.toLowerCase().includes(filter.toLowerCase()) ||
     client.phoneNumber.toLowerCase().includes(filter.toLowerCase())
+
   );
 
   const handleExistingPets = async () => {
@@ -105,7 +104,7 @@ const ClientList = () => {
         {filteredClients.map(client => (
           <li key={client.clientID}>
             <div className="client-info">
-              <span>{client.firstName} {client.lastName}: {client.phoneNumber}</span>
+              <span>{client.name}: {client.phoneNumber}</span>
               <button onClick={() => handleSelectClient(client)}>Edit</button>
               <button onClick={() => handleDeleteClient(client.clientID)}>Delete</button>
             </div>
@@ -125,15 +124,9 @@ const ClientList = () => {
           <h3>Edit Client</h3>
           <input
             type="text"
-            placeholder="Имя"
-            value={selectedClient.firstName}
-            onChange={(e) => setSelectedClient({ ...selectedClient, firstName: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Фамилия"
-            value={selectedClient.lastName}
-            onChange={(e) => setSelectedClient({ ...selectedClient, lastName: e.target.value })}
+            placeholder="ФИО"
+            value={selectedClient.name}
+            onChange={(e) => setSelectedClient({ ...selectedClient, name: e.target.value })}
           />
           <input
             type="text"

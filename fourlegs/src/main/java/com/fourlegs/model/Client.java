@@ -13,19 +13,19 @@ import java.util.Set;
 
 @Data
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@clientID")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "@clientID")
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long clientID;
-    private String firstName;
-    private String lastName;
+    private String name;
     private String phoneNumber;
     private String email;
     private String address;
 
 
     @ManyToMany(mappedBy = "owners")
+    @JsonManagedReference
     private List<Pet> pets = new ArrayList<>();
 
 }
